@@ -1,13 +1,17 @@
 <template>
-    <div class="chat_list active_chat">
-        <div class="chat_people">
-            <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-            <div class="chat_ib" v-for="user in threadMutated.users">
-                <h5>{{ user.full_name }} <span class="chat_date">{{ threadMutated.items[0].timestamp }}Dec 25</span></h5>
-                <p>{{ threadMutated.items[0].text }}</p>
+        <div class="chat_list"
+             @mouseover="isHovering = true"
+             @mouseout="isHovering = false"
+             :class="{active_chat: isHovering}">
+            <div class="chat_people" v-for="user in threadMutated.users" @click="showMessages(user)">
+                <div class="chat_img"> <img :src="user.profile_pic_url" alt="sunil"> </div>
+                <div class="chat_ib">
+                    <h5>{{ user.full_name }} <span class="chat_date">{{ threadMutated.items[0].timestamp | dateIndex }}</span></h5>
+                    <p v-if="threadMutated.items[0].item_type === 'text'">{{ threadMutated.items[0].text }}</p>
+                    <p v-else="threadMutated.items[0].item_type === 'media'">Картинка...</p>
+                </div>
             </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -18,8 +22,15 @@
         data: function () {
             return {
                 threadMutated: this.thread,
+                isPicture: false,
+                isHovering: false,
             }
         },
+        methods: {
+            showMessages(user) {
+                window.location.href = '/home/' + user.pk;
+            }
+        }
     }
 </script>
 
