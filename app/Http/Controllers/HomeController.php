@@ -45,11 +45,31 @@ class HomeController extends Controller
 
     /**
      * Метод для отображения списка сообщений конкретного пользователя
-     * @param Request $id
+     * @param int $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Request $id)
+    public function show(int $id)
     {
-        return view('home/show');
+
+        $ig = $this->traitlogin();
+
+        $people = $ig->people->getInfoById($id);
+        //Проверяем что пользователь с таким id сушествует
+        if ($people->getStatus() == 'ok') {
+            $answerUser = $people->getUser();
+
+            $threads = $ig->direct->getThreadByParticipants([$id]);
+            $items = $threads->getThread()->getItems();
+
+            $currentUser = $ig->account->getCurrentUser()->getUser();
+            $currentUserPk = $currentUser->getPk();
+
+
+            return view('home/show', [
+                'items' => $items,
+                'currentUserPk' => $currentUserPk,
+                'answerUser' => $answerUser
+            ]);
+        }
     }
 }
