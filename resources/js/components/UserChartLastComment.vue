@@ -27,6 +27,10 @@
             }
         },
         methods: {
+            /**
+             * Переходим на страницу show для просмотра всех сообщений пользователя
+             * @param user
+             */
             showMessages(user) {
                 window.location.href = '/home/' + user.pk;
             }

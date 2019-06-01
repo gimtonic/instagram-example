@@ -1,32 +1,24 @@
 <?php
+
 namespace App\Traits;
 
 /**
- * Трейт для авторизации
+ * Трейт для авторизации с помощью библиотеки mgp25/Instagram-API
  * @return \InstagramAPI\Instagram
  */
 trait ConsoleTrait
 {
+    /**
+     * Метод для авторизации с помощью библиотеки mgp25/Instagram-API
+     * @return \InstagramAPI\Instagram
+     */
     function login() {
-
-        /** @var  bool $debug Логическое. Режим отладки (необязательно)*/
-        $debug = false;
-        /** @var  bool $truncatedDebug Конфигурация для желаемой пользовательской настройки хранилища настроек. (Необязательный)*/
-        $truncatedDebug=false;
-
-        //$ig = new \InstagramAPI\Instagram($debug, $truncatedDebug, $storageConfig = []);
-
+        /** @var  bool allowDangerousWebUsageAtMyOwnRisk Даём разрешение на запуск библиотеки через веб-страницу,
+         * по-умолчанию можем запускать только с помощью консоли
+         */
         \InstagramAPI\Instagram::$allowDangerousWebUsageAtMyOwnRisk = true;
 
         $ig = new \InstagramAPI\Instagram();
-
-        //$ig = new \InstagramAPI\Instagram(true, true, [
-        //    'storage'    => env('DB_CONNECTION'),
-        //    'dbhost'     => env('DB_HOST'),
-        //    'dbname'     => env('DB_DATABASE'),
-        //    'dbusername' => env('DB_USERNAME'),
-        //    'dbpassword' => env('DB_PASSWORD'),
-        //]);
 
         $ig->login(
             env('INSTAGRAM_USERNAME'),

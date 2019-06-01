@@ -18,4 +18,4 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/home/{id}', 'HomeController@show');
+Route::get('/home/{id}', 'HomeController@show')->where('id', '[0-9]+');

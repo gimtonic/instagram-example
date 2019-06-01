@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use App\Traits\ConsoleTrait;
+use InstagramAPI\Response\Model\DirectThread;
+use InstagramAPI\Response\Model\DirectThreadItem;
 
 /**
  * Контроллер для отображения дашборда
@@ -14,11 +14,13 @@ use App\Traits\ConsoleTrait;
  */
 class HomeController extends Controller
 {
+    /**
+     * Трейт для авторизации с помощью библиотеки mgp25/Instagram-API
+     */
     use ConsoleTrait { login as protected traitlogin; }
 
     /**
      * Конструктор
-     *
      * @return void
      */
     public function __construct()
@@ -28,15 +30,20 @@ class HomeController extends Controller
 
     /**
      * Метод для отображения списка сообщений пользователей
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
+        /** @var  \InstagramAPI\Instagram $ig Создаем объект и авторизуемся в трейде*/
         $ig = $this->traitlogin();
-        $inbox = $ig->direct->getInbox();
 
-        $threads = $inbox->getInbox()->getThreads();
+        /** @var \InstagramAPI\Response\DirectInboxResponse $incomingMessageFromDirect
+         * Получаем все входящие сообщения из Direct для нашего аккаунта
+         */
+        $incomingMessageFromDirect = $ig->direct->getInbox();
+
+        /** @var  DirectThread[] $threads Получаем все многопоточные сообщения пользователей*/
+        $threads = $incomingMessageFromDirect->getInbox()->getThreads();
 
         return view('home/index', [
             'threads' => $threads
@@ -46,30 +53,23 @@ class HomeController extends Controller
     /**
      * Метод для отображения списка сообщений конкретного пользователя
      * @param int $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function show(int $id)
     {
-
+        /** @var  \InstagramAPI\Instagram $ig Создаем объект и авторизуемся в трейде*/
         $ig = $this->traitlogin();
+        /** @var  \InstagramAPI\Response\UserInfoResponse $userInfo Получаем информацию о пользователе с id */
+        $answerUser = $ig->people->getInfoById($id)->getUser();
+        /** @var  DirectThreadItem[] $items Получение все сообщений пользователя с id */
+        $items = $ig->direct->getThreadByParticipants([$id])->getThread()->getItems();
+        /** @var string $currentUserPk Получение pk текущего пользователя */
+        $currentUserPk = $ig->account->getCurrentUser()->getUser()->getPk();
 
-        $people = $ig->people->getInfoById($id);
-        //Проверяем что пользователь с таким id сушествует
-        if ($people->getStatus() == 'ok') {
-            $answerUser = $people->getUser();
-
-            $threads = $ig->direct->getThreadByParticipants([$id]);
-            $items = $threads->getThread()->getItems();
-
-            $currentUser = $ig->account->getCurrentUser()->getUser();
-            $currentUserPk = $currentUser->getPk();
-
-
-            return view('home/show', [
-                'items' => $items,
-                'currentUserPk' => $currentUserPk,
-                'answerUser' => $answerUser
-            ]);
-        }
+        return view('home/show', [
+            'items' => $items,
+            'currentUserPk' => $currentUserPk,
+            'answerUser' => $answerUser
+        ]);
     }
 }
