@@ -71,8 +71,8 @@ class HomeController extends Controller
         $items = $thread->getItems();
 
         /** @var string $currentUserPk Получение pk текущего пользователя */
-        $currentUserPk = $ig->account->getCurrentUser()->getUser()->getPk();
-        
+        $currentUserPk = $ig->account_id;
+
         return view('home/show', [
             'items' => $items,
             'currentUserPk' => $currentUserPk,
