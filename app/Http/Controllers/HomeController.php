@@ -37,12 +37,12 @@ class HomeController extends Controller
         /** @var  \InstagramAPI\Instagram $ig Создаем объект и авторизуемся в трейде*/
         $ig = $this->traitlogin();
 
-        /** @var \InstagramAPI\Response\DirectInboxResponse $incomingMessageFromDirect
+        /** @var object $incomingMessageFromDirect
          * Получаем все входящие сообщения из Direct для нашего аккаунта
          */
         $incomingMessageFromDirect = $ig->direct->getInbox();
 
-        /** @var  DirectThread[] $threads Получаем все многопоточные сообщения пользователей*/
+        /** @var  array $threads Получаем все многопоточные сообщения пользователей*/
         $threads = $incomingMessageFromDirect->getInbox()->getThreads();
 
         return view('home/index', [
@@ -53,7 +53,7 @@ class HomeController extends Controller
     /**
      * Метод для отображения списка сообщений конкретного пользователя
      * @param int $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(int $id)
     {
@@ -61,10 +61,10 @@ class HomeController extends Controller
         /** @var  \InstagramAPI\Instagram $ig Создаем объект и авторизуемся в трейде*/
         $ig = $this->traitlogin();
 
-        /** @var  DirectThread $thread Получаем thread по идентификатору*/
+        /** @var object $thread Получаем thread по идентификатору*/
         $thread = $ig->direct->getThreadByParticipants([$id])->getThread();
 
-        /** @var  User $answerUser Получаем информацию о пользователе с id */
+        /** @var object $answerUser Получаем информацию о пользователе с id */
         $answerUser = $thread->getUsers()[0];
 
         /** @var  array $items Получение все сообщений пользователя с id */

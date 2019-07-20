@@ -4,7 +4,6 @@ namespace App\Traits;
 
 /**
  * Трейт для авторизации с помощью библиотеки mgp25/Instagram-API
- * @return \InstagramAPI\Instagram
  */
 trait ConsoleTrait
 {
@@ -12,7 +11,7 @@ trait ConsoleTrait
      * Метод для авторизации с помощью библиотеки mgp25/Instagram-API
      * @return \InstagramAPI\Instagram
      */
-    function login() {
+    private function login() {
         /** @var  bool allowDangerousWebUsageAtMyOwnRisk Даём разрешение на запуск библиотеки через веб-страницу,
          * по-умолчанию можем запускать только с помощью консоли
          */
