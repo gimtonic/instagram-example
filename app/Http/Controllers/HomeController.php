@@ -57,18 +57,22 @@ class HomeController extends Controller
      */
     public function show(int $id)
     {
+
         /** @var  \InstagramAPI\Instagram $ig Создаем объект и авторизуемся в трейде*/
         $ig = $this->traitlogin();
 
-        /** @var  \InstagramAPI\Response\UserInfoResponse $userInfo Получаем информацию о пользователе с id */
-        $answerUser = $ig->people->getInfoById($id)->getUser();
+        /** @var  DirectThread $thread Получаем thread по идентификатору*/
+        $thread = $ig->direct->getThreadByParticipants([$id])->getThread();
 
-        /** @var  DirectThreadItem[] $items Получение все сообщений пользователя с id */
-        $items = $ig->direct->getThreadByParticipants([$id])->getThread()->getItems();
+        /** @var  User $answerUser Получаем информацию о пользователе с id */
+        $answerUser = $thread->getUsers()[0];
+
+        /** @var  array $items Получение все сообщений пользователя с id */
+        $items = $thread->getItems();
 
         /** @var string $currentUserPk Получение pk текущего пользователя */
         $currentUserPk = $ig->account->getCurrentUser()->getUser()->getPk();
-
+        
         return view('home/show', [
             'items' => $items,
             'currentUserPk' => $currentUserPk,
