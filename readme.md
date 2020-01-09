@@ -59,6 +59,9 @@
     php artisan cache:clear
     ```
 
+# DEMO
+Вот [тут](http://instagram.ordersbesma.ml/home) демо, нужно зарегистрироватся там же для входа в админку.
+
 # Важная особенность! 
 
 Cейчас реализовано только отправка сообщений,аудио и фото через DIRECT INSTAGRAM.
